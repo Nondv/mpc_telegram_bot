@@ -58,13 +58,13 @@ end
 namespace :bot do
   desc 'Start Telegram bot'
   task :start do
-    ruby 'bot.rb'
+    ruby 'bot_runner.rb'
   end
 
   namespace :daemon do
     desc 'Start Telegram bot as daemon'
     task :start do
-      !bot_pid && ruby("bot.rb -d -p #{Config.bot_pid_file} -l #{Config.bot_log_file}")
+      !bot_pid && ruby("bot_runner.rb -d -p #{Config.bot_pid_file} -l #{Config.bot_log_file}")
     end
 
     desc 'Stop Telegram bot daemon'
