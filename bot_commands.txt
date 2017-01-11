@@ -1,0 +1,2 @@
+current - Current song info
+playlist - Playlist viewing
