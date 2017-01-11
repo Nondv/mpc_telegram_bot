@@ -69,15 +69,16 @@ Telegram::Bot::Client.run(Config.bot_token, logger: logger) do |bot|
       respond[message, parse_mode: :markdown, text: text]
       stop_command[message]
     when '/playlist'
-      question = "Which one?\n\n" + API.playlists.map { |e| "* #{e}" }.join("\n")
-      buttons = API.playlists.map { |e| [e] }
+      playlists = ['__current__'] + API.playlists
+      question = "Which one?\n\n" + playlists.map { |e| "* #{e}" }.join("\n")
+      buttons = playlists.map { |e| [e] }
       kb = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: buttons, one_time_keyboard: true)
       respond[message, text: question, reply_markup: kb]
       start_command[message]
     else
       case command_in_progress[message]
       when '/playlist'
-        playlist_name = message.text
+        playlist_name = message.text == '__current__' ? '' : message.text
         songs = API.playlist_songs(playlist_name)
         respond[message, text: songs.join("\n")]
         stop_command[message]
