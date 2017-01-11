@@ -104,10 +104,14 @@ class Bot
 
   def run
     telegram_bot.listen do |msg|
-      if command_in_progress(msg.chat.id)
-        continue_command(msg)
-      elsif command_defined?(msg.text)
-        execute_command(msg.text, msg)
+      begin
+        if    command_in_progress(msg.chat.id) then continue_command(msg)
+        elsif command_defined?(msg.text)       then execute_command(msg.text, msg)
+        end
+      rescue => e
+        respond(msg, text: 'Something went wrong, sorry. Check logs, bro')
+        stop_command(msg)
+        logger.error(e)
       end
     end
   end
