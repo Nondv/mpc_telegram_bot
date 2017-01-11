@@ -103,22 +103,21 @@ class Bot
   end
 
   def run
-    telegram_bot.listen do |msg|
-      begin
-        if    command_in_progress(msg.chat.id) then continue_command(msg)
-        elsif command_defined?(msg.text)       then execute_command(msg.text, msg)
-        end
-      rescue => e
-        respond(msg, text: 'Something went wrong, sorry. Check logs, bro')
-        stop_command(msg)
-        logger.error(e)
-      end
-    end
+    telegram_bot.listen(&method(:process_message))
   end
 
   private
 
   attr_reader :logger, :token
+
+  def process_message(msg)
+    return continue_command(msg) if command_in_progress(msg.chat.id)
+    return execute_command(msg.text, msg) if command_defined?(msg.text)
+  rescue => e
+    respond(msg, text: 'Something went wrong, sorry. Check logs, bro')
+    stop_command(msg)
+    logger.error(e)
+  end
 
   def respond(msg, params = {})
     telegram_bot.api.send_message(params.merge(chat_id: msg.chat.id))
