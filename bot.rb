@@ -80,7 +80,8 @@ Telegram::Bot::Client.run(Config.bot_token, logger: logger) do |bot|
       when '/playlist'
         playlist_name = message.text == '__current__' ? '' : message.text
         songs = API.playlist_songs(playlist_name)
-        respond[message, text: songs.join("\n")]
+        remove_kb = Telegram::Bot::Types::ReplyKeyboardRemove.new(remove_keyboard: true)
+        respond[message, text: songs.join("\n"), reply_markup: remove_kb]
         stop_command[message]
       end
     end
