@@ -69,7 +69,7 @@ Telegram::Bot::Client.run(Config.bot_token, logger: logger) do |bot|
       respond[message, parse_mode: :markdown, text: text]
       stop_command[message]
     when '/playlist'
-      question = 'Which one?'
+      question = "Which one?\n\n" + API.playlists.map { |e| "* #{e}" }.join("\n")
       buttons = API.playlists.map { |e| [e] }
       kb = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: buttons, one_time_keyboard: true)
       respond[message, text: question, reply_markup: kb]
