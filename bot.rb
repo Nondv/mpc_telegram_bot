@@ -42,44 +42,72 @@ module API
 end
 
 class Bot
+  class << self
+    def def_command(name, &block)
+      self.commands = commands.merge(name => block).freeze
+    end
+
+    def def_command_processing(name, &block)
+      self.command_processors = command_processors.merge(name => block).freeze
+    end
+
+    def command_block(command_name)
+      commands[command_name]
+    end
+
+    def command_processor_block(command_name)
+      command_processors[command_name]
+    end
+
+    private
+
+    attr_writer :commands
+    attr_writer :command_processors
+
+    def commands
+      @commands ||= {}.freeze
+    end
+
+    def command_processors
+      @command_processors ||= {}.freeze
+    end
+  end
+
   def initialize(token, options = {})
     @token = token
     @logger = options[:logger]
   end
 
-  def run
-    Telegram::Bot::Client.run(Config.bot_token, logger: logger) do |bot|
-      client_commands = {}
-      stop_command = ->(msg) { client_commands.delete(msg.chat.id) }
-      start_command = ->(msg) { client_commands[msg.chat.id] = msg.text }
-      command_in_progress = ->(msg) { client_commands[msg.chat.id] }
-      respond = ->(msg, params = {}) { bot.api.send_message(params.merge(chat_id: msg.chat.id)) }
+  def_command '/current' do |message|
+    song_info = API.current_song
+    text = "#{song_info['artist']} - #{song_info['title']}\n" \
+           "Album: #{song_info['album']}"
+    respond(message, parse_mode: :markdown, text: text)
+  end
 
-      bot.listen do |message|
-        case message.text
-        when '/current'
-          song_info = API.current_song
-          text = "#{song_info['artist']} - #{song_info['title']}\n" \
-                 "Album: #{song_info['album']}"
-          respond[message, parse_mode: :markdown, text: text]
-          stop_command[message]
-        when '/playlist'
-          playlists = ['__current__'] + API.playlists
-          question = "Which one?\n\n" + playlists.map { |e| "* #{e}" }.join("\n")
-          buttons = playlists.map { |e| [e] }
-          kb = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: buttons, one_time_keyboard: true)
-          respond[message, text: question, reply_markup: kb]
-          start_command[message]
-        else
-          case command_in_progress[message]
-          when '/playlist'
-            playlist_name = message.text == '__current__' ? '' : message.text
-            songs = API.playlist_songs(playlist_name)
-            remove_kb = Telegram::Bot::Types::ReplyKeyboardRemove.new(remove_keyboard: true)
-            respond[message, text: songs.join("\n"), reply_markup: remove_kb]
-            stop_command[message]
-          end
-        end
+  def_command '/playlist' do |message|
+    playlists = ['__current__'] + API.playlists
+    question = "Which one?\n\n" + playlists.map { |e| "* #{e}" }.join("\n")
+    buttons = playlists.map { |e| [e] }
+    kb = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: buttons, one_time_keyboard: true)
+    respond(message, text: question, reply_markup: kb)
+    start_command(message)
+  end
+
+  def_command_processing '/playlist' do |message|
+    playlist_name = message.text == '__current__' ? '' : message.text
+    songs = API.playlist_songs(playlist_name)
+    remove_kb = Telegram::Bot::Types::ReplyKeyboardRemove.new(remove_keyboard: true)
+    respond(message, text: songs.join("\n"), reply_markup: remove_kb)
+    stop_command(message)
+  end
+
+  def run
+    telegram_bot.listen do |msg|
+      if command_in_progress(msg.chat.id)
+        continue_command(msg)
+      elsif command_defined?(msg.text)
+        execute_command(msg.text, msg)
       end
     end
   end
@@ -87,4 +115,56 @@ class Bot
   private
 
   attr_reader :logger, :token
+
+  def respond(msg, params = {})
+    telegram_bot.api.send_message(params.merge(chat_id: msg.chat.id))
+  end
+
+  def execute_command(name, message)
+    block = command_block(name)
+    raise "#{name} not defined" unless block
+
+    instance_exec(message, &block)
+  end
+
+  def continue_command(message)
+    command_name = command_in_progress(message.chat.id)
+    raise 'no command in progress' unless command_name
+
+    block = command_processor_block(command_name)
+    raise "#{command_name} processor not defined" unless block
+
+    instance_exec(message, &block)
+  end
+
+  def command_in_progress(chat_id)
+    processing_command_hash[chat_id]
+  end
+
+  def start_command(message)
+    processing_command_hash[message.chat.id] = message.text
+  end
+
+  def stop_command(message)
+    processing_command_hash.delete(message.chat.id)
+  end
+
+  # don't use it directly!
+  def processing_command_hash
+    @processing_command_hash ||= {}
+  end
+
+  def command_block(name)
+    self.class.command_block(name)
+  end
+
+  alias command_defined? command_block
+
+  def command_processor_block(name)
+    self.class.command_processor_block(name)
+  end
+
+  def telegram_bot
+    @telegram_bot ||= Telegram::Bot::Client.new(token, logger: logger)
+  end
 end
