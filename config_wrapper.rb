@@ -15,7 +15,7 @@ module Config
   end
 
   def bot_pid_file
-    result = @data['bot'] && @data['bot']['pid_file'] || 'bot.pid'
+    result = @data['bot'] && @data['bot']['pid_file'] || 'bot/bot.pid'
     File.absolute_path(result)
   end
 
@@ -24,7 +24,7 @@ module Config
   end
 
   def bot_log_file
-    result = @data['bot'] && @data['bot']['log_file'] || 'bot.log'
+    result = @data['bot'] && @data['bot']['log_file'] || 'bot/bot.log'
     File.absolute_path(result)
   end
 end

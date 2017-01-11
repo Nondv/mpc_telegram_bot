@@ -3,7 +3,7 @@ require 'json'
 require 'rest-client'
 require 'yaml'
 require 'optparse'
-require_relative 'config_wrapper'
+require_relative '../config_wrapper'
 
 module API
   config = YAML.load(File.read('config.yml'))

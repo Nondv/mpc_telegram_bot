@@ -1,5 +1,5 @@
 require 'optparse'
-require_relative 'config_wrapper'
+require_relative '../config_wrapper'
 require_relative 'bot'
 
 unless Config.bot_token

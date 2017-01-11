@@ -1,4 +1,3 @@
-api.pid
-bot.log
-bot.pid
+*.pid
+*.log
 config.yml
