@@ -13,3 +13,11 @@ end
 get '/current.json' do
   current_track_info.to_json
 end
+
+get '/playlists.json' do
+  playlists.to_json
+end
+
+get '/playlist.json' do
+  playlist_songs(params['name']).to_json
+end

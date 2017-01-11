@@ -7,4 +7,12 @@ module MpcWrapper
       album: album,
       title: title }
   end
+
+  def playlists
+    `mpc lsplaylists`.split("\n")
+  end
+
+  def playlist_songs(name)
+    `mpc playlist #{name}`.split("\n")
+  end
 end
