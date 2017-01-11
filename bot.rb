@@ -17,13 +17,11 @@ module API
   module_function
 
   def current_song
-    data = RestClient.get api_url('/current.json')
-    JSON.parse(data)
+    api_get('/current.json')
   end
 
   def playlists
-    data = RestClient.get api_url('/playlists.json')
-    JSON.parse(data)
+    api_get('/playlists.json')
   end
 
   def playlist_songs(name)
@@ -68,7 +66,7 @@ Telegram::Bot::Client.run(Config.bot_token, logger: logger) do |bot|
       song_info = API.current_song
       text = "#{song_info['artist']} - #{song_info['title']}\n" \
              "Album: #{song_info['album']}"
-      bot.api.send_message(chat_id: message.chat.id, parse_mode: :markdown, text: text)
+      respond[message, parse_mode: :markdown, text: text]
       stop_command[message]
     when '/playlist'
       question = 'Which one?'
