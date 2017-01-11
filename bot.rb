@@ -5,11 +5,6 @@ require 'yaml'
 require 'optparse'
 require_relative 'config_wrapper'
 
-unless Config.bot_token
-  puts 'Provide bot token in config.yml first!'
-  exit 1
-end
-
 module API
   config = YAML.load(File.read('config.yml'))
   API_BASE_URL = "localhost:#{config['api']['port']}".freeze
