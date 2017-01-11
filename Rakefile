@@ -10,6 +10,24 @@ def bot_pid
   File.exist?(Config.bot_pid_file) && File.read(Config.bot_pid_file)
 end
 
+desc 'Start api and bot daemons'
+task :start do
+  Rake::Task['api:daemon:start'].invoke
+  Rake::Task['bot:daemon:start'].invoke
+end
+
+desc 'Stop api and bot daemons'
+task :stop do
+  Rake::Task['api:daemon:stop'].invoke
+  Rake::Task['bot:daemon:stop'].invoke
+end
+
+desc 'Restart api and bot daemons'
+task :restart do
+  Rake::Task['api:daemon:restart'].invoke
+  Rake::Task['bot:daemon:restart'].invoke
+end
+
 namespace :api do
   desc 'Start api server'
   task :start do
