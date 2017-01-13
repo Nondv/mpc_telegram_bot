@@ -2,11 +2,11 @@ require 'rake/testtask'
 require_relative 'config/config_wrapper'
 
 def api_pid
-  File.exist?(Config.api_pid_file) && File.read(Config.api_pid_file)
+  File.exist?(Config.api_pid_file) && File.read(Config.api_pid_file).to_i
 end
 
 def bot_pid
-  File.exist?(Config.bot_pid_file) && File.read(Config.bot_pid_file)
+  File.exist?(Config.bot_pid_file) && File.read(Config.bot_pid_file).to_i
 end
 
 desc 'Start api and bot daemons'
@@ -41,9 +41,8 @@ namespace :api do
 
     desc 'Stop api server daemon'
     task :stop do
-      next unless api_pid
-      sh("kill -QUIT #{api_pid}")
-      # rm(Config.api_pid_file)
+      Process.kill(9, api_pid) if api_pid
+      rm(Config.api_pid_file)  if File.exist?(Config.api_pid_file)
     end
 
     desc 'Restart (or just start) api server daemon'
@@ -68,9 +67,8 @@ namespace :bot do
 
     desc 'Stop Telegram bot daemon'
     task :stop do
-      next unless bot_pid
-      sh("kill -KILL #{bot_pid}")
-      rm(Config.bot_pid_file)
+      Process.kill(9, bot_pid) if bot_pid
+      rm(Config.bot_pid_file)  if File.exist?(Config.bot_pid_file)
     end
 
     desc 'Restart (or just start) Telegram bot daemon'
