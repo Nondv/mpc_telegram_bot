@@ -1,2 +1,4 @@
 current - Current song info
 playlist - Playlist viewing
+next - Play next track
+previous - Play previous track

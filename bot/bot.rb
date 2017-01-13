@@ -16,9 +16,17 @@ class Bot
   end
 
   def_command '/current' do |message|
-    song_info = API.current_song
-    text = "#{song_info['artist']} - #{song_info['title']}\n" \
-           "Album: #{song_info['album']}"
+    text = formatted_track_info(API.current_song)
+    respond(message, parse_mode: :markdown, text: text)
+  end
+
+  def_command '/next' do |message|
+    text = formatted_track_info(API.next_track)
+    respond(message, parse_mode: :markdown, text: text)
+  end
+
+  def_command '/previous' do |message|
+    text = formatted_track_info(API.previous_track)
     respond(message, parse_mode: :markdown, text: text)
   end
 
@@ -54,6 +62,11 @@ class Bot
     respond(msg, text: 'Something went wrong, sorry. Check logs, bro')
     stop_command(msg)
     logger.error(e)
+  end
+
+  def formatted_track_info(track_info)
+    "#{track_info['artist']} - #{track_info['title']}\n" \
+    "Album: #{track_info['album']}"
   end
 
   def respond(msg, params = {})

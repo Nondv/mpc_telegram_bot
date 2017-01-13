@@ -18,10 +18,28 @@ module API
     api_get('/playlist.json', params: { name: name })
   end
 
+  def next_track
+    api_put('/next.json', {})
+  end
+
+  def previous_track
+    api_put('/previous.json', {})
+  end
+
   # api_get '/path'
   def api_get(*args)
+    api_request(:get, args)
+  end
+
+  def api_put(*args)
+    api_request(:put, args)
+  end
+
+  # api_request :get, ['/path']
+  def api_request(req_type, args)
     args[0] = api_url(args[0])
-    data = RestClient.get(*args)
+    args.unshift(req_type)
+    data = RestClient.send(*args)
     JSON.parse(data)
   end
 
