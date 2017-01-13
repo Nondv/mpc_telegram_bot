@@ -19,3 +19,11 @@ end
 get '/playlist.json' do
   MpcWrapper.playlist_songs(params['name']).to_json
 end
+
+put '/next.json' do
+  MpcWrapper.next_track.to_json
+end
+
+put '/previous.json' do
+  MpcWrapper.previous_track.to_json
+end

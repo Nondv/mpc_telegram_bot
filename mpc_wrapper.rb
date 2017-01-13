@@ -15,4 +15,14 @@ module MpcWrapper
   def playlist_songs(name)
     `mpc playlist #{name}`.split("\n")
   end
+
+  def next_track
+    `mpc next`
+    current_track_info
+  end
+
+  def previous_track
+    `mpc prev`
+    current_track_info
+  end
 end

@@ -33,4 +33,23 @@ class ApiTest < Minitest::Test
       assert_equal songs_stub, JSON.parse(last_response.body)
     end
   end
+
+  def test_next_track
+    track_info_stub = { 'artist' => 'next', 'album' => 'next', 'title' => 'next' }
+
+    MpcWrapper.stub(:next_track, track_info_stub) do
+      put '/next.json'
+      assert_equal track_info_stub, JSON.parse(last_response.body)
+    end
+  end
+
+
+  def test_previous_track
+    track_info_stub = { 'artist' => 'prev', 'album' => 'prev', 'title' => 'prev' }
+
+    MpcWrapper.stub(:previous_track, track_info_stub) do
+      put '/previous.json'
+      assert_equal track_info_stub, JSON.parse(last_response.body)
+    end
+  end
 end
