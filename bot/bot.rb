@@ -5,46 +5,14 @@ require 'yaml'
 require 'optparse'
 
 require_relative 'api_client'
-require_relative 'dsl'
+require_relative 'commands'
 
 class Bot
-  include DSL
+  include Commands
 
   def initialize(token, options = {})
     @token = token
     @logger = options[:logger]
-  end
-
-  def_command '/current' do |message|
-    text = formatted_track_info(API.current_song)
-    respond(message, parse_mode: :markdown, text: text)
-  end
-
-  def_command '/next' do |message|
-    text = formatted_track_info(API.next_track)
-    respond(message, parse_mode: :markdown, text: text)
-  end
-
-  def_command '/previous' do |message|
-    text = formatted_track_info(API.previous_track)
-    respond(message, parse_mode: :markdown, text: text)
-  end
-
-  def_command '/playlist' do |message|
-    playlists = ['__current__'] + API.playlists
-    question = "Which one?\n\n" + playlists.map { |e| "* #{e}" }.join("\n")
-    buttons = playlists.map { |e| [e] }
-    kb = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: buttons, one_time_keyboard: true)
-    respond(message, text: question, reply_markup: kb)
-    start_command(message)
-  end
-
-  def_command_processing '/playlist' do |message|
-    playlist_name = message.text == '__current__' ? '' : message.text
-    songs = API.playlist_songs(playlist_name)
-    remove_kb = Telegram::Bot::Types::ReplyKeyboardRemove.new(remove_keyboard: true)
-    respond(message, text: songs.join("\n"), reply_markup: remove_kb)
-    stop_command(message)
   end
 
   def run
