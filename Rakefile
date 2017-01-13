@@ -43,7 +43,7 @@ namespace :api do
     task :stop do
       next unless api_pid
       sh("kill -QUIT #{api_pid}")
-      rm(Config.api_pid_file)
+      # rm(Config.api_pid_file)
     end
 
     desc 'Restart (or just start) api server daemon'
