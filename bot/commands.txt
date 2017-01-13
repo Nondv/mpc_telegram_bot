@@ -1,4 +1,6 @@
 current - Current song info
-playlist - Playlist viewing
+play - Play
+pause - Pause
 next - Play next track
 previous - Play previous track
+playlist - Playlist viewing

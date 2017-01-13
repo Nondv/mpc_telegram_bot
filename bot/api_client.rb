@@ -25,6 +25,14 @@ module API
     api_put('/previous.json', {})
   end
 
+  def play
+    api_put('/play.json', {})
+  end
+
+  def pause
+    api_put('/pause.json', {})
+  end
+
   # api_get '/path'
   def api_get(*args)
     api_request(:get, args)

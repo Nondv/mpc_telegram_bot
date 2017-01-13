@@ -11,10 +11,10 @@ class ApiTest < Minitest::Test
   end
 
   def test_current
-    current_track_stub = { 'artist' => '1', 'album' => '2', 'title' => '3' }
-    MpcWrapper.stub(:current_track_info, current_track_stub) do
+    info = track_info_stub('current')
+    MpcWrapper.stub(:current_track_info, info) do
       get '/current.json'
-      assert_equal current_track_stub, JSON.parse(last_response.body)
+      assert_equal info, JSON.parse(last_response.body)
     end
   end
 
@@ -35,21 +35,40 @@ class ApiTest < Minitest::Test
   end
 
   def test_next_track
-    track_info_stub = { 'artist' => 'next', 'album' => 'next', 'title' => 'next' }
-
-    MpcWrapper.stub(:next_track, track_info_stub) do
+    info = track_info_stub('next')
+    MpcWrapper.stub(:next_track, info) do
       put '/next.json'
-      assert_equal track_info_stub, JSON.parse(last_response.body)
+      assert_equal info, JSON.parse(last_response.body)
     end
   end
 
-
   def test_previous_track
-    track_info_stub = { 'artist' => 'prev', 'album' => 'prev', 'title' => 'prev' }
-
-    MpcWrapper.stub(:previous_track, track_info_stub) do
+    info = track_info_stub('prev')
+    MpcWrapper.stub(:previous_track, info) do
       put '/previous.json'
-      assert_equal track_info_stub, JSON.parse(last_response.body)
+      assert_equal info, JSON.parse(last_response.body)
     end
+  end
+
+  def test_play
+    info = track_info_stub('play')
+    MpcWrapper.stub(:play, info) do
+      put '/play.json'
+      assert_equal info, JSON.parse(last_response.body)
+    end
+  end
+
+  def test_pause
+    info = track_info_stub('pause')
+    MpcWrapper.stub(:pause, info) do
+      put '/pause.json'
+      assert_equal info, JSON.parse(last_response.body)
+    end
+  end
+
+  private
+
+  def track_info_stub(value)
+    { 'artist' => value, 'album' => value, 'title' => value }
   end
 end

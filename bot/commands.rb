@@ -21,6 +21,16 @@ class Bot
           respond(message, parse_mode: :markdown, text: text)
         end
 
+        def_command '/play' do |message|
+          text = formatted_track_info(API.play)
+          respond(message, parse_mode: :markdown, text: text)
+        end
+
+        def_command '/pause' do |message|
+          text = formatted_track_info(API.pause)
+          respond(message, parse_mode: :markdown, text: text)
+        end
+
         def_command '/playlist' do |message|
           playlists = ['__current__'] + API.playlists
           question = "Which one?\n\n" + playlists.map { |e| "* #{e}" }.join("\n")

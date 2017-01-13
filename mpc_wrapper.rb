@@ -25,4 +25,14 @@ module MpcWrapper
     `mpc prev`
     current_track_info
   end
+
+  def play
+    `mpc play`
+    current_track_info
+  end
+
+  def pause
+    `mpc pause`
+    current_track_info
+  end
 end

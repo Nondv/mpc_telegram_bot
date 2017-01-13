@@ -27,3 +27,11 @@ end
 put '/previous.json' do
   MpcWrapper.previous_track.to_json
 end
+
+put '/pause.json' do
+  MpcWrapper.pause.to_json
+end
+
+put '/play.json' do
+  MpcWrapper.play.to_json
+end
