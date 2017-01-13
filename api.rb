@@ -1,7 +1,7 @@
 require 'sinatra'
 require 'json'
 require 'yaml'
-require_relative 'config_wrapper'
+require_relative 'config/config_wrapper'
 require_relative 'mpc_wrapper'
 
 configure do

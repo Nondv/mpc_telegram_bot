@@ -1,7 +1,5 @@
 require 'rake/testtask'
-require_relative 'config_wrapper'
-
-config = YAML.load(File.read('config.yml'))
+require_relative 'config/config_wrapper'
 
 def api_pid
   File.exist?(Config.api_pid_file) && File.read(Config.api_pid_file)

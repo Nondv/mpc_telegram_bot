@@ -1,8 +1,7 @@
-require_relative '../config_wrapper'
+require_relative '../config/config_wrapper'
 
 module API
-  config = YAML.load(File.read('config.yml'))
-  API_BASE_URL = "localhost:#{config['api']['port']}".freeze
+  API_BASE_URL = "localhost:#{Config.api_port}".freeze
 
   module_function
 
