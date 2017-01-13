@@ -1,3 +1,4 @@
+require 'rake/testtask'
 require_relative 'config_wrapper'
 
 config = YAML.load(File.read('config.yml'))
@@ -80,4 +81,11 @@ namespace :bot do
       Rake::Task['bot:daemon:start'].invoke
     end
   end
+end
+
+Rake::TestTask.new do |t|
+  ENV['RACK_ENV'] = 'test'
+  # t.libs << 'test'
+  t.test_files = FileList['test/*_test.rb']
+  t.verbose = true
 end
