@@ -66,9 +66,34 @@ class ApiTest < Minitest::Test
     end
   end
 
+  def test_volume
+    MpcWrapper.stub(:volume, 10) do
+      get '/volume.json'
+      assert_equal 10, parsed_response['volume']
+    end
+  end
+
+  def test_volume_up
+    MpcWrapper.stub(:volume, 20) do
+      put '/volume/up.json'
+      assert_equal 20, parsed_response['volume']
+    end
+  end
+
+  def test_volume_down
+    MpcWrapper.stub(:volume, 30) do
+      put '/volume/down.json'
+      assert_equal 30, parsed_response['volume']
+    end
+  end
+
   private
 
   def track_info_stub(value)
     { 'artist' => value, 'album' => value, 'title' => value }
+  end
+
+  def parsed_response
+    JSON.parse(last_response.body)
   end
 end

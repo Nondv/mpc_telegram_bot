@@ -37,6 +37,10 @@ class Bot
     "Album: #{track_info['album']}"
   end
 
+  def current_volume_text(percents)
+    "Current volume is #{percents}%"
+  end
+
   def telegram_bot
     @telegram_bot ||= Telegram::Bot::Client.new(token, logger: logger)
   end

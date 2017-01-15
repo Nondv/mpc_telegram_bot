@@ -31,6 +31,21 @@ class Bot
           respond(message, parse_mode: :markdown, text: text)
         end
 
+        def_command '/volumeup' do |message|
+          text = current_volume_text(API.volume_up)
+          respond(message, text: text)
+        end
+
+        def_command '/volumedown' do |message|
+          text = current_volume_text(API.volume_down)
+          respond(message, text: text)
+        end
+
+        def_command '/volume' do |message|
+          text = current_volume_text(API.volume)
+          respond(message, text: text)
+        end
+
         def_command '/playlist' do |message|
           playlists = ['__current__'] + API.playlists
           question = "Which one?\n\n" + playlists.map { |e| "* #{e}" }.join("\n")

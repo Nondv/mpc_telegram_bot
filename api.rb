@@ -35,3 +35,15 @@ end
 put '/play.json' do
   MpcWrapper.play.to_json
 end
+
+get '/volume.json' do
+  { volume: MpcWrapper.volume }.to_json
+end
+
+put '/volume/up.json' do
+  { volume: MpcWrapper.volume('+25') }.to_json
+end
+
+put '/volume/down.json' do
+  { volume: MpcWrapper.volume('-25') }.to_json
+end

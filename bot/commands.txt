@@ -3,4 +3,7 @@ play - Play
 pause - Pause
 next - Play next track
 previous - Play previous track
+volume - Current volume
+volumeup - Up volume
+volumedown - Down volume
 playlist - Playlist viewing

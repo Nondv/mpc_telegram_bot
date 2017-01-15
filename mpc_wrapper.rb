@@ -35,4 +35,11 @@ module MpcWrapper
     `mpc pause`
     current_track_info
   end
+
+  # returns volume in percents
+  def volume(value = nil)
+    regex = /volume:\s*(\d*)%/
+    status = `mpc volume #{value}`
+    regex.match(status)[1].to_i
+  end
 end
