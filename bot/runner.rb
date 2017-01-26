@@ -25,6 +25,7 @@ begin
   bot.run
 rescue => e
   logger.error(e)
+  retry
 end
 
 File.delete(options[:pidfile]) if options[:pidfile]
