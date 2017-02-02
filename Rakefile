@@ -9,6 +9,15 @@ def bot_pid
   File.exist?(Config.bot_pid_file) && File.read(Config.bot_pid_file).to_i
 end
 
+def kill_process(pid)
+  Rake.rake_output_message "KILL #{pid}"
+  Process.kill(9, pid)
+  true
+rescue Errno::ESRCH
+  # No such process
+  false
+end
+
 desc 'Start api and bot daemons'
 task :start do
   Rake::Task['api:daemon:start'].invoke
@@ -41,7 +50,7 @@ namespace :api do
 
     desc 'Stop api server daemon'
     task :stop do
-      Process.kill(9, api_pid) if api_pid
+      kill_process(api_pid)    if api_pid
       rm(Config.api_pid_file)  if File.exist?(Config.api_pid_file)
     end
 
@@ -67,7 +76,7 @@ namespace :bot do
 
     desc 'Stop Telegram bot daemon'
     task :stop do
-      Process.kill(9, bot_pid) if bot_pid
+      kill_process(bot_pid)    if bot_pid
       rm(Config.bot_pid_file)  if File.exist?(Config.bot_pid_file)
     end
 
