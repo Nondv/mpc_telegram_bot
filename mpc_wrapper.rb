@@ -36,6 +36,11 @@ module MpcWrapper
     current_track_info
   end
 
+  def update
+    `mpc update`
+    { status: :ok }
+  end
+
   # returns volume in percents
   def volume(value = nil)
     regex = /volume:\s*(\d*)%/

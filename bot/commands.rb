@@ -46,6 +46,11 @@ class Bot
           respond(message, text: text)
         end
 
+        def_command '/update' do |message|
+          text = API.update ? 'Update in progress' : 'Something went wrong'
+          respond(message, text: text)
+        end
+
         def_command '/playlist' do |message|
           playlists = ['__current__'] + API.playlists
           question = "Which one?\n\n" + playlists.map { |e| "* #{e}" }.join("\n")

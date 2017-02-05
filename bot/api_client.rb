@@ -45,6 +45,10 @@ module API
     api_put('/volume/down.json', {})['volume']
   end
 
+  def update
+    api_post('/update.json', {})
+  end
+
   # api_get '/path'
   def api_get(*args)
     api_request(:get, args)
@@ -52,6 +56,10 @@ module API
 
   def api_put(*args)
     api_request(:put, args)
+  end
+
+  def api_post(*args)
+    api_request(:post, args)
   end
 
   # api_request :get, ['/path']

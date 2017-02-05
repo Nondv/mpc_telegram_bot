@@ -47,3 +47,7 @@ end
 put '/volume/down.json' do
   { volume: MpcWrapper.volume('-25') }.to_json
 end
+
+post '/update.json' do
+  MpcWrapper.update.to_json
+end
