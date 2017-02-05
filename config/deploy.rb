@@ -76,3 +76,17 @@ namespace :app do
     end
   end
 end
+
+namespace :logs do
+  namespace :bot do
+    desc 'View bot logs'
+    task :tail, :lines do |_task, args|
+      lines = args[:lines] || 25
+      on roles(:all) do |_host|
+        within release_path do
+          execute "tail -#{lines} #{shared_path}/log/bot.log"
+        end
+      end
+    end
+  end
+end
