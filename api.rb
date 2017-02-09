@@ -48,6 +48,14 @@ put '/volume/down.json' do
   { volume: MpcWrapper.volume('-25') }.to_json
 end
 
+put '/repeat.json' do
+  MpcWrapper.repeat.to_json
+end
+
+put '/random.json' do
+  MpcWrapper.random.to_json
+end
+
 post '/update.json' do
   MpcWrapper.update.to_json
 end

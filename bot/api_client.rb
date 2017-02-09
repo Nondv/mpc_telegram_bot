@@ -53,6 +53,14 @@ module API
     api_post('/reload.json', {})
   end
 
+  def repeat
+    api_put('/repeat.json', {})
+  end
+
+  def random
+    api_put('/random.json', {})
+  end
+
   # api_get '/path'
   def api_get(*args)
     api_request(:get, args)

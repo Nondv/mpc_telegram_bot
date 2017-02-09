@@ -46,6 +46,16 @@ module MpcWrapper
     { status: :ok }
   end
 
+  def random
+    output = `mpc random`
+    { message: output.scan(/random: [^\s]*/)[0] }
+  end
+
+  def repeat
+    output = `mpc repeat`
+    { message: output.scan(/repeat: [^\s]*/)[0] }
+  end
+
   # returns volume in percents
   def volume(value = nil)
     regex = /volume:\s*(\d*)%/

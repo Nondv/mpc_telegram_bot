@@ -57,6 +57,14 @@ class Bot
           execute_command('/play', message)
         end
 
+        def_command '/repeat' do |message|
+          respond(message, text: API.repeat[:message])
+        end
+
+        def_command '/random' do |message|
+          respond(message, text: API.random[:message])
+        end
+
         def_command '/playlist' do |message|
           playlists = ['__current__'] + API.playlists
           question = "Which one?\n\n" + playlists.map { |e| "* #{e}" }.join("\n")

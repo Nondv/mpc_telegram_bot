@@ -6,6 +6,8 @@ previous - Play previous track
 volume - Current volume
 volumeup - Up volume
 volumedown - Down volume
+random - Toggle random
+repeat - Toggle repeat
 playlist - Playlist viewing
 update - Update library
 reload - Reload music list
