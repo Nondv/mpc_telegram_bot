@@ -33,8 +33,8 @@ class Bot
   end
 
   def formatted_track_info(track_info)
-    "#{track_info['artist']} - #{track_info['title']}\n" \
-    "Album: #{track_info['album']}"
+    "#{track_info[:artist]} - #{track_info[:title]}\n" \
+    "Album: #{track_info[:album]}"
   end
 
   def current_volume_text(percents)

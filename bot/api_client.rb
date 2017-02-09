@@ -79,7 +79,7 @@ module API
     args[0] = api_url(args[0])
     args.unshift(req_type)
     data = RestClient.send(*args)
-    JSON.parse(data)
+    JSON.parse(data, symbolize_names: true)
   end
 
   def api_url(path)
