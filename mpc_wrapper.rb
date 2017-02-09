@@ -41,6 +41,11 @@ module MpcWrapper
     { status: :ok }
   end
 
+  def reload
+    `mpc clear && (mpc listall | mpc add)`
+    { status: :ok }
+  end
+
   # returns volume in percents
   def volume(value = nil)
     regex = /volume:\s*(\d*)%/

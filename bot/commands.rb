@@ -51,6 +51,12 @@ class Bot
           respond(message, text: text)
         end
 
+        def_command '/reload' do |message|
+          text = API.reload ? 'Reloaded' : 'Something went wrong'
+          respond(message, text: text)
+          execute_command('/play', message)
+        end
+
         def_command '/playlist' do |message|
           playlists = ['__current__'] + API.playlists
           question = "Which one?\n\n" + playlists.map { |e| "* #{e}" }.join("\n")

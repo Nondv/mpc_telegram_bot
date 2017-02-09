@@ -51,3 +51,7 @@ end
 post '/update.json' do
   MpcWrapper.update.to_json
 end
+
+post '/reload.json' do
+  MpcWrapper.reload.to_json
+end

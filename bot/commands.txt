@@ -8,3 +8,4 @@ volumeup - Up volume
 volumedown - Down volume
 playlist - Playlist viewing
 update - Update library
+reload - Reload music list

@@ -49,6 +49,10 @@ module API
     api_post('/update.json', {})
   end
 
+  def reload
+    api_post('/reload.json', {})
+  end
+
   # api_get '/path'
   def api_get(*args)
     api_request(:get, args)
