@@ -4,6 +4,7 @@ gem 'rake'
 gem 'rest-client'
 gem 'sinatra'
 gem 'telegram-bot-ruby'
+gem 'barrymore'
 
 group :development, :test do
   gem 'minitest'

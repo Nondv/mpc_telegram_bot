@@ -1,10 +1,10 @@
-require_relative 'dsl'
-
 class Bot
   module Commands
     def self.included(klass)
       klass.class_eval do
-        include DSL
+        def self.def_command(name, &block)
+          define_command(name, &block)
+        end
 
         def_command '/current' do |message|
           text = formatted_track_info(API.current_song)
@@ -71,15 +71,15 @@ class Bot
           buttons = playlists.map { |e| [e] }
           kb = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: buttons, one_time_keyboard: true)
           respond(message, text: question, reply_markup: kb)
-          start_command(message)
+          start_command_processing(message)
         end
 
-        def_command_processing '/playlist' do |message|
+        define_command_continuation '/playlist' do |message|
           playlist_name = message.text == '__current__' ? '' : message.text
           songs = API.playlist_songs(playlist_name)
           remove_kb = Telegram::Bot::Types::ReplyKeyboardRemove.new(remove_keyboard: true)
           respond(message, text: songs.join("\n"), reply_markup: remove_kb)
-          stop_command(message)
+          stop_command_processing(message)
         end
       end
     end

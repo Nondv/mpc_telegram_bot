@@ -7,6 +7,7 @@ GEM
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
+    barrymore (0.1.0)
     capistrano (3.7.1)
       airbrussh (>= 1.0.0)
       capistrano-harrow
@@ -71,6 +72,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  barrymore
   capistrano (~> 3.7)
   minitest
   rack-test
@@ -80,4 +82,4 @@ DEPENDENCIES
   telegram-bot-ruby
 
 BUNDLED WITH
-   1.12.5
+   1.13.7
