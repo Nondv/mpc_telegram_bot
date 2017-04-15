@@ -34,15 +34,15 @@ module API
   end
 
   def volume
-    api_get('/volume.json')['volume']
+    api_get('/volume.json')[:volume]
   end
 
   def volume_up
-    api_put('/volume/up.json', {})['volume']
+    api_put('/volume/up.json', {})[:volume]
   end
 
   def volume_down
-    api_put('/volume/down.json', {})['volume']
+    api_put('/volume/down.json', {})[:volume]
   end
 
   def update
