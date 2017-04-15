@@ -1,7 +1,7 @@
 require_relative '../config/config_wrapper'
 
 module API
-  API_BASE_URL = "localhost:#{Config.api_port}".freeze
+  API_BASE_URL = 'localhost:6789'.freeze
 
   module_function
 

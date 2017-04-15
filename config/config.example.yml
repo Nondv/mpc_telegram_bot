@@ -1,6 +1,3 @@
-api:
-  port: 6789
-  pid_file: '/first/path'
 bot:
   token: 'some token'
   pid_file: '/second/path'
