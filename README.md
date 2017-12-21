@@ -7,6 +7,8 @@ MPD telegram bot.
 ### Plain ruby
 
 ```
+git clone git@github.com:Nondv/mpc_telegram_bot.git
+cd mpc_telegram_bot
 ruby bot/runner --help
 ruby bot/runner -t <YOUR TOKEN>
 ```
