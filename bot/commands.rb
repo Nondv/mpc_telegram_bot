@@ -1,5 +1,47 @@
+require 'ruby-mpd-client'
+
 class Bot
   module Commands
+    def connection
+      @connection ||= MPD::Connection.new(host: mpd_host, port: 6600)
+    end
+
+    def reconnect
+      connection.connect
+      connection.gets # first response
+    end
+
+    def connected?
+      MPD::Commands::Ping.new(connection: connection).execute
+    end
+
+    def exec_command(klass, *args)
+      reconnect unless connected?
+      klass.new(connection: connection).execute(*args)
+    end
+
+    def song_info(song)
+      artist = song['Artist']
+      title = song['Title']
+      if !artist && !title
+        song['file']
+      else
+        album = song['Album']
+        "#{artist} - #{title}" + (album ? "\nAlbum: #{album}" : '')
+      end
+    end
+
+    def current_song_info
+      song_info(exec_command(MPD::Commands::CurrentSong))
+    end
+
+    def current_status
+      status = exec_command(MPD::Commands::Status)
+      "Volume: #{status['volume']}\n" \
+      "Random: #{status['random'] == '1'}" \
+      "Repeat: #{status['repeat'] == '1'}"
+    end
+
     def self.included(klass)
       klass.class_eval do
         def self.def_command(name, &block)
@@ -7,66 +49,75 @@ class Bot
         end
 
         def_command '/current' do |message|
-          text = formatted_track_info(API.current_song)
-          respond(message, parse_mode: :markdown, text: text)
+          respond(message, parse_mode: :markdown, text: current_song_info)
         end
 
         def_command '/next' do |message|
-          text = formatted_track_info(API.next_track)
-          respond(message, parse_mode: :markdown, text: text)
+          exec_command(MPD::Commands::Next)
+          respond(message, parse_mode: :markdown, text: current_song_info)
         end
 
         def_command '/previous' do |message|
-          text = formatted_track_info(API.previous_track)
-          respond(message, parse_mode: :markdown, text: text)
+          exec_command(MPD::Commands::Previous)
+          respond(message, parse_mode: :markdown, text: current_song_info)
         end
 
         def_command '/play' do |message|
-          text = formatted_track_info(API.play)
-          respond(message, parse_mode: :markdown, text: text)
+          exec_command(MPD::Commands::Play)
+          respond(message, parse_mode: :markdown, text: current_song_info)
         end
 
         def_command '/pause' do |message|
-          text = formatted_track_info(API.pause)
-          respond(message, parse_mode: :markdown, text: text)
+          exec_command(MPD::Commands::Pause)
+          respond(message, parse_mode: :markdown, text: current_song_info)
         end
 
         def_command '/volumeup' do |message|
-          text = current_volume_text(API.volume_up)
-          respond(message, text: text)
+          volume = exec_command(MPD::Commands::Status)['volume'].to_i
+          next_volume = [100, volume + 25].min
+          exec_command(MPD::Commands::SetVolume, next_volume)
+          respond(message, text: "Volume: #{next_volume}")
         end
 
         def_command '/volumedown' do |message|
-          text = current_volume_text(API.volume_down)
-          respond(message, text: text)
+          volume = exec_command(MPD::Commands::Status)['volume'].to_i
+          next_volume = [0, volume - 25].max
+          exec_command(MPD::Commands::SetVolume, next_volume)
+          respond(message, text: "Volume: #{next_volume}")
         end
 
         def_command '/volume' do |message|
-          text = current_volume_text(API.volume)
-          respond(message, text: text)
+          respond(message,
+                  parse_mode: :markdown,
+                  text: exec_command(MPD::Commands::Status)['volume'])
         end
 
         def_command '/update' do |message|
-          text = API.update ? 'Update in progress' : 'Something went wrong'
-          respond(message, text: text)
+          exec_command(MPD::Commands::Update)
+          respond(message, parse_mode: :markdown, text: 'Update started')
         end
 
         def_command '/reload' do |message|
-          text = API.reload ? 'Reloaded' : 'Something went wrong'
-          respond(message, text: text)
-          execute_command('/play', message)
+          files = exec_command(MPD::Commands::AllFiles)
+          exec_command(MPD::Commands::CurrentPlaylistClear)
+          exec_command(MPD::Commands::CurrentPlaylistAdd, files)
+          respond(message, parse_mode: :markdown, text: 'Done')
         end
 
         def_command '/repeat' do |message|
-          respond(message, text: API.repeat[:message])
+          next_state = '1' != exec_command(MPD::Commands::Status)['repeat']
+          exec_command(MPD::Commands::Repeat, next_state)
+          respond(message, parse_mode: :markdown, text: current_status)
         end
 
         def_command '/random' do |message|
-          respond(message, text: API.random[:message])
+          next_state = '1' != exec_command(MPD::Commands::Status)['random']
+          exec_command(MPD::Commands::Random, next_state)
+          respond(message, parse_mode: :markdown, text: current_status)
         end
 
         def_command '/playlist' do |message|
-          playlists = ['__current__'] + API.playlists
+          playlists = ['-current-'] + exec_command(MPD::Commands::PlaylistList)
           question = "Which one?\n\n" + playlists.map { |e| "* #{e}" }.join("\n")
           buttons = playlists.map { |e| [e] }
           kb = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: buttons, one_time_keyboard: true)
@@ -75,10 +126,13 @@ class Bot
         end
 
         define_command_continuation '/playlist' do |message|
-          playlist_name = message.text == '__current__' ? '' : message.text
-          songs = API.playlist_songs(playlist_name)
+          songs = if message.text == '-current-'
+                    exec_command(MPD::Commands::CurrentPlaylistInfo)
+                  else
+                    exec_command(MPD::Commands::PlaylistInfo, message.text)
+                  end
           remove_kb = Telegram::Bot::Types::ReplyKeyboardRemove.new(remove_keyboard: true)
-          respond(message, text: songs.join("\n"), reply_markup: remove_kb)
+          respond(message, text: songs.map(&method(:song_info)).join("\n"), reply_markup: remove_kb)
           stop_command_processing(message)
         end
       end

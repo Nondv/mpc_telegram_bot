@@ -5,7 +5,6 @@ require 'yaml'
 require 'optparse'
 require 'barrymore'
 
-require_relative 'api_client'
 require_relative 'commands'
 
 class Bot
@@ -15,6 +14,7 @@ class Bot
   def initialize(token, options = {})
     @token = token
     @logger = options[:logger]
+    @mpd_host = options[:mpd_host]
   end
 
   def run
@@ -23,7 +23,7 @@ class Bot
 
   private
 
-  attr_reader :logger, :token
+  attr_reader :logger, :token, :mpd_host
 
   def process_message(msg)
     msg = telegram_to_barrymore(msg)
