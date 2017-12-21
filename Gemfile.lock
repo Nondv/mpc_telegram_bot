@@ -28,6 +28,7 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
+    ruby-mpd-client (1.2.1)
     telegram-bot-ruby (0.7.1)
       faraday
       virtus
@@ -48,6 +49,7 @@ DEPENDENCIES
   barrymore
   rake
   rest-client
+  ruby-mpd-client (= 1.2.1)
   telegram-bot-ruby
 
 BUNDLED WITH
