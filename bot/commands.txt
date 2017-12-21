@@ -11,3 +11,4 @@ repeat - Toggle repeat
 playlist - Load playlist
 update - Update library
 reload - Reload music list
+clear - Clear queue

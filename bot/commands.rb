@@ -97,6 +97,11 @@ class Bot
           respond(message, parse_mode: :markdown, text: 'Update started')
         end
 
+        def_command '/clear' do |message|
+          exec_command(MPD::Commands::CurrentPlaylistClear)
+          respond(message, parse_mode: :markdown, text: 'Done')
+        end
+
         def_command '/reload' do |message|
           files = exec_command(MPD::Commands::AllFiles)
           exec_command(MPD::Commands::CurrentPlaylistClear)
