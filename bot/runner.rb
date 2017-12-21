@@ -2,7 +2,9 @@ require 'optparse'
 require_relative '../config/config_wrapper'
 require_relative 'bot'
 
-unless Config.bot_token
+token = ENV['TOKEN'] || Config.bot_token
+
+unless token
   puts 'Provide bot token in config.yml first!'
   exit 1
 end
@@ -19,7 +21,7 @@ Process.daemon if options[:daemonize] # true - dont change working dir
 File.write(options[:pidfile], Process.pid) if options[:pidfile]
 
 logger = Logger.new(options[:logfile] || STDOUT)
-bot = Bot.new(Config.bot_token, logger: logger)
+bot = Bot.new(token, logger: logger)
 
 begin
   bot.run
