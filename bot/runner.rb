@@ -7,11 +7,12 @@ op.banner = 'Telegram bot for mpc'
 op.on('-d', '--daemonize', 'run as daemon') { options[:daemonize] = true }
 op.on('-p', '--pid PIDFILE', 'write PID to file') { |value| options[:pidfile] = value }
 op.on('-l', '--log LOGFILE', 'write to log instead of stdout') { |value| options[:logfile] = value }
+op.on('-t', '--token TOKEN', 'telegram token') { |value| options[:token] = value }
 op.parse!
 
-token = ENV['TOKEN']
+token = options[:token] || ENV['TOKEN']
 unless token
-  puts 'Provide bot token via env TOKEN!'
+  puts 'Provide bot token via env TOKEN or --token option!'
   exit 1
 end
 
