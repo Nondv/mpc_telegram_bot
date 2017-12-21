@@ -2,7 +2,7 @@ require 'optparse'
 require_relative 'bot'
 
 options = {
-  mpd_host: 'localhost'
+  mpd_host: ENV['MPD_HOST'] || 'localhost'
 }
 op = OptionParser.new
 op.banner = 'Telegram bot for mpc'
