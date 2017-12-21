@@ -8,6 +8,6 @@ volumeup - Up volume
 volumedown - Down volume
 random - Toggle random
 repeat - Toggle repeat
-playlist - Playlist viewing
+playlist - Load playlist
 update - Update library
 reload - Reload music list

@@ -117,22 +117,22 @@ class Bot
         end
 
         def_command '/playlist' do |message|
-          playlists = ['-current-'] + exec_command(MPD::Commands::PlaylistList)
-          question = "Which one?\n\n" + playlists.map { |e| "* #{e}" }.join("\n")
-          buttons = playlists.map { |e| [e] }
-          kb = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: buttons, one_time_keyboard: true)
-          respond(message, text: question, reply_markup: kb)
-          start_command_processing(message)
+          playlists = exec_command(MPD::Commands::PlaylistList)
+          if playlists.empty?
+            respond(message, text: 'Seems like you dont have any playlists')
+          else
+            question = "What playlist do you wanna load?\n\n" + playlists.map { |e| "* #{e}" }.join("\n")
+            buttons = playlists.map { |e| [e] }
+            kb = Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: buttons, one_time_keyboard: true)
+            respond(message, text: question, reply_markup: kb)
+            start_command_processing(message)
+          end
         end
 
         define_command_continuation '/playlist' do |message|
-          songs = if message.text == '-current-'
-                    exec_command(MPD::Commands::CurrentPlaylistInfo)
-                  else
-                    exec_command(MPD::Commands::PlaylistInfo, message.text)
-                  end
+          exec_command(MPD::Commands::PlaylistLoad, message.text)
           remove_kb = Telegram::Bot::Types::ReplyKeyboardRemove.new(remove_keyboard: true)
-          respond(message, text: songs.map(&method(:song_info)).join("\n"), reply_markup: remove_kb)
+          respond(message, text: 'Done', reply_markup: remove_kb)
           stop_command_processing(message)
         end
       end
