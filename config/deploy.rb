@@ -21,7 +21,7 @@ set :deploy_to, '/home/pi/mpc_telegram_bot'
 # set :pty, true
 
 # Default value for :linked_files is []
-append :linked_files, 'config/config.yml'
+# append :linked_files, 'config/config.yml'
 
 # Default value for linked_dirs is []
 append :linked_dirs, 'tmp/pids', 'log'

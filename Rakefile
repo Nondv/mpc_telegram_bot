@@ -1,7 +1,7 @@
-require_relative 'config/config_wrapper'
+PID_FILE = File.expand_path('../tmp/pids/bot.pid', __FILE__)
 
 def bot_pid
-  File.exist?(Config.bot_pid_file) && File.read(Config.bot_pid_file).to_i
+  File.exist?(PID_FILE) && File.read(PID_FILE).to_i
 end
 
 def kill_process(pid)
@@ -37,13 +37,13 @@ namespace :bot do
   namespace :daemon do
     desc 'Start Telegram bot as daemon'
     task :start do
-      !bot_pid && ruby("bot/runner.rb -d -p #{Config.bot_pid_file} -l #{Config.bot_log_file}")
+      !bot_pid && ruby("bot/runner.rb -d -p #{PID_FILE} -l tmp/bot.log")
     end
 
     desc 'Stop Telegram bot daemon'
     task :stop do
       kill_process(bot_pid)    if bot_pid
-      rm(Config.bot_pid_file)  if File.exist?(Config.bot_pid_file)
+      rm(PID_FILE)  if File.exist?(PID_FILE)
     end
 
     desc 'Restart (or just start) Telegram bot daemon'

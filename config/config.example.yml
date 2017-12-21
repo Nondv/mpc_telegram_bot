@@ -1,4 +1,0 @@
-bot:
-  token: 'some token'
-  pid_file: '/second/path'
-  log_file: '/third/path'

@@ -1,5 +1,3 @@
-require_relative '../config/config_wrapper'
-
 module API
   URL = 'localhost:6789'.freeze
 
