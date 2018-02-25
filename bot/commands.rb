@@ -74,14 +74,14 @@ class Bot
 
         def_command '/volumeup' do |message|
           volume = exec_command(MPD::Commands::Status)['volume'].to_i
-          next_volume = [100, volume + 25].min
+          next_volume = [100, volume + 15].min
           exec_command(MPD::Commands::SetVolume, next_volume)
           respond(message, text: "Volume: #{next_volume}")
         end
 
         def_command '/volumedown' do |message|
           volume = exec_command(MPD::Commands::Status)['volume'].to_i
-          next_volume = [0, volume - 25].max
+          next_volume = [0, volume - 10].max
           exec_command(MPD::Commands::SetVolume, next_volume)
           respond(message, text: "Volume: #{next_volume}")
         end
